@@ -1,14 +1,26 @@
+# live-build generated output
+.build/
+build/
+builds/
+cache/
 chroot/
 binary/
-cache/
-local/
+source/
+
+# images and generated build reports
 *.iso
+*.img
 *.log
-live-image-*
 *.contents
 *.files
 *.packages
-binary.modified_timestamps
-chroot.files
-chroot.packages.*
-wget-log*
+
+# temporary files
+*.tmp
+*.bak
+*~
+.DS_Store
+
+# local env
+.env
+.env.*
