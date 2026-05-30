@@ -1,0 +1,14 @@
+chroot/
+binary/
+cache/
+local/
+*.iso
+*.log
+live-image-*
+*.contents
+*.files
+*.packages
+binary.modified_timestamps
+chroot.files
+chroot.packages.*
+wget-log*
