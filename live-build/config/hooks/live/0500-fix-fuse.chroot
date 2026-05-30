@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+# Installera ersättaren för libfuse2 i Trixie
+apt-get install -y libfuse2t64 || apt-get install -y libfuse3-3 || true
+
