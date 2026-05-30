@@ -1,0 +1,5 @@
+# Disabled for Anemone OS v1 production baseline.
+# Debian Sid/Unstable must not be used in the default build.
+#
+# Original:
+# deb http://deb.debian.org/debian sid main
