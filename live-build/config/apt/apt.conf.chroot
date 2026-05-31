@@ -1,1 +1,1 @@
-Acquire::https::packages.microsoft.com::Verify-Peer "false";
+// Production builds must not disable HTTPS peer verification.

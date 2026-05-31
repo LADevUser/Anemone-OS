@@ -111,21 +111,3 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-# --- Anemone Custom CLI Completion ---
-# Aktivera AWS CLI completion
-complete -C '/usr/bin/aws_completer' aws
-
-# Aktivera Azure CLI completion
-if [ -f /etc/bash_completion.d/azure-cli ]; then
-  source /etc/bash_completion.d/azure-cli
-fi
-
-# .NET CLI completion
-_dotnet_bash_complete()
-{
-  local word=${COMP_WORDS[COMP_CWORD]}
-  local dotnet_completion=( $(dotnet complete --position ${COMP_POINT} "${COMP_LINE}") )
-  COMPREPLY=( $(compgen -W "${dotnet_completion[*]}" -- "$word") )
-}
-complete -f -F _dotnet_bash_complete dotnet

@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
-# Installera ersättaren för libfuse2 i Trixie
-apt-get install -y libfuse2t64 || apt-get install -y libfuse3-3 || true
 
+# Anemone OS v1 uses fuse3 only. Do not install libfuse2 or libfuse2t64
+# unless a named supported application explicitly requires legacy FUSE.
+apt-get install -y fuse3
