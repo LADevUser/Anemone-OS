@@ -1,84 +1,121 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -e
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+LIVE_BUILD_DIR="$PROJECT_ROOT/live-build"
+ARTIFACTS_DIR="$PROJECT_ROOT/artifacts"
 
-# ===== CONFIG =====
-DIST="trixie"
-ARCH="amd64"
-NAME="anemone"
+VERSION_FILE="$PROJECT_ROOT/VERSION"
+VERSION="dev"
 
-VERSION_FILE="VERSION"
-BUILD_DIR="builds"
-
-# ===== INIT =====
-mkdir -p "$BUILD_DIR"
-
-# Om VERSION saknas → skapa
-if [ ! -f "$VERSION_FILE" ]; then
-    echo "v1.0.0" > "$VERSION_FILE"
+if [ -f "$VERSION_FILE" ]; then
+  VERSION="$(tr -d '[:space:]' < "$VERSION_FILE")"
 fi
 
-VERSION=$(cat "$VERSION_FILE")
+TIMESTAMP="$(date +%Y%m%d-%H%M)"
+ISO_NAME="anemone-os-${VERSION}-${TIMESTAMP}.iso"
 
-# Buildnummer (auto increment)
-BUILD_NUMBER_FILE="$BUILD_DIR/.build_number"
+echo "== Anemone OS build =="
+echo "Project root:    $PROJECT_ROOT"
+echo "Live-build dir:  $LIVE_BUILD_DIR"
+echo "Artifacts dir:   $ARTIFACTS_DIR"
+echo "Version:         $VERSION"
+echo
 
-if [ ! -f "$BUILD_NUMBER_FILE" ]; then
-    echo "0" > "$BUILD_NUMBER_FILE"
+command -v lb >/dev/null 2>&1 || {
+  echo "ERROR: live-build is not installed."
+  echo "Install with:"
+  echo "  sudo apt install live-build"
+  exit 1
+}
+
+if [ ! -d "$LIVE_BUILD_DIR" ]; then
+  echo "ERROR: Missing live-build directory: $LIVE_BUILD_DIR"
+  exit 1
 fi
 
-BUILD_NUMBER=$(cat "$BUILD_NUMBER_FILE")
-BUILD_NUMBER=$((BUILD_NUMBER + 1))
-echo "$BUILD_NUMBER" > "$BUILD_NUMBER_FILE"
-
-DATE=$(date +%Y%m%d-%H%M)
-
-OUTPUT="${NAME}-${VERSION}-b${BUILD_NUMBER}-${DATE}.iso"
-LOG="${BUILD_DIR}/build-${VERSION}-b${BUILD_NUMBER}-${DATE}.log"
-
-echo "🌿 Building Anemone Linux..."
-echo "Version: $VERSION"
-echo "Build: $BUILD_NUMBER"
-echo "Date: $DATE"
-echo "----------------------------------"
-
-# ===== CLEAN =====
-echo "🧹 Cleaning..."
-sudo lb clean --purge
-
-rm -f wget-log*
-rm -f *.iso
-rm -f build.log
-
-# ===== CONFIG =====
-echo "⚙️ Configuring..."
-sudo lb config \
-  --distribution "$DIST" \
-  --architectures "$ARCH" \
-  --archive-areas "main contrib non-free non-free-firmware" \
-  --debian-installer live \
-  --bootappend-live "boot=live components quiet splash systemd.show_status=false"
-
-# ===== BUILD =====
-echo "🏗️ Building..."
-sudo lb build 2>&1 | tee "$LOG"
-
-# ===== FIND ISO =====
-ISO_FOUND=$(ls live-image-*.iso 2>/dev/null | head -n 1 || true)
-
-if [ -z "$ISO_FOUND" ]; then
-    echo "❌ No ISO found! Build failed."
-    exit 1
+if [ ! -d "$LIVE_BUILD_DIR/config" ]; then
+  echo "ERROR: Missing live-build config directory: $LIVE_BUILD_DIR/config"
+  exit 1
 fi
 
-# ===== MOVE OUTPUT =====
-mv "$ISO_FOUND" "$BUILD_DIR/$OUTPUT"
+mkdir -p "$ARTIFACTS_DIR"
 
-# ===== LATEST SYMLINK =====
-ln -sf "$OUTPUT" "$BUILD_DIR/${NAME}-latest.iso"
+echo "Checking for forbidden production sources..."
 
-echo "----------------------------------"
-echo "✅ DONE"
-echo "ISO: $BUILD_DIR/$OUTPUT"
-echo "LOG: $LOG"
-echo "Latest: $BUILD_DIR/${NAME}-latest.iso"
+if [ -f "$LIVE_BUILD_DIR/config/archives/sid.list.chroot" ]; then
+  echo "ERROR: Debian Sid repository is enabled:"
+  echo "  $LIVE_BUILD_DIR/config/archives/sid.list.chroot"
+  echo
+  echo "For Anemone OS v1 production baseline, Sid must be disabled."
+  echo "Rename it to:"
+  echo "  sid.list.chroot.disabled"
+  exit 1
+fi
+
+echo "Checking git working tree..."
+
+if command -v git >/dev/null 2>&1 && git -C "$PROJECT_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if ! git -C "$PROJECT_ROOT" diff --quiet || ! git -C "$PROJECT_ROOT" diff --cached --quiet; then
+    echo "WARNING: Git working tree has uncommitted changes."
+    echo "This build may not be reproducible from a clean checkout."
+    echo
+  fi
+
+  GIT_COMMIT="$(git -C "$PROJECT_ROOT" rev-parse --short HEAD)"
+else
+  GIT_COMMIT="nogit"
+fi
+
+echo "Git commit:      $GIT_COMMIT"
+echo
+
+cd "$LIVE_BUILD_DIR"
+
+echo "Cleaning previous live-build state..."
+sudo lb clean --purge || true
+
+echo "Configuring live-build..."
+sudo lb config
+
+echo "Starting live-build..."
+sudo lb build
+
+echo "Searching for generated ISO..."
+
+ISO_PATH="$(find "$LIVE_BUILD_DIR" -maxdepth 1 -type f -name '*.iso' | sort | tail -n 1 || true)"
+
+if [ -z "$ISO_PATH" ]; then
+  echo "ERROR: Build completed, but no ISO was found in:"
+  echo "  $LIVE_BUILD_DIR"
+  exit 1
+fi
+
+FINAL_ISO="$ARTIFACTS_DIR/$ISO_NAME"
+
+echo "Moving ISO:"
+echo "  from: $ISO_PATH"
+echo "  to:   $FINAL_ISO"
+
+mv "$ISO_PATH" "$FINAL_ISO"
+
+ln -sfn "$(basename "$FINAL_ISO")" "$ARTIFACTS_DIR/anemone-os-latest.iso"
+
+cat > "$ARTIFACTS_DIR/${ISO_NAME%.iso}.build-info.txt" <<INFO
+Anemone OS build information
+
+Version:      $VERSION
+Git commit:   $GIT_COMMIT
+Built at:     $(date --iso-8601=seconds)
+Host:         $(hostname)
+Live-build:   $(lb --version 2>/dev/null || echo unknown)
+ISO:          $(basename "$FINAL_ISO")
+INFO
+
+echo
+echo "Build complete."
+echo "ISO:"
+echo "  $FINAL_ISO"
+echo
+echo "Latest symlink:"
+echo "  $ARTIFACTS_DIR/anemone-os-latest.iso"
