@@ -1,0 +1,14 @@
+== Anemone OS build ==
+Project root:    /home/gremlin/Src/Anemone-OS
+Live-build dir:  /home/gremlin/Src/Anemone-OS/live-build
+Artifacts dir:   /home/gremlin/Src/Anemone-OS/artifacts
+Version:         v1.0.0
+
+Checking for forbidden production sources...
+Checking git working tree...
+WARNING: Git working tree has uncommitted changes.
+This build may not be reproducible from a clean checkout.
+
+Git commit:      b623b8e
+
+Cleaning previous live-build state...

@@ -1,0 +1,13 @@
+--2026-06-01 22:47:50--  http://deb.debian.org/debian//dists/testing/contrib/Contents-all.gz
+Slår upp deb.debian.org (deb.debian.org)... 151.101.130.132, 151.101.194.132, 151.101.2.132, ...
+Ansluter till deb.debian.org (deb.debian.org)|151.101.130.132|:80 … ansluten.
+HTTP-begäran skickad, väntar på svar... 200 OK
+Längd: 128762 (126K) [application/x-gzip]
+Sparar till: ”cache/contents.chroot/testing/contrib/contents-all.gz”
+
+     0K .......... .......... .......... .......... .......... 39% 3,79M 0s
+    50K .......... .......... .......... .......... .......... 79% 11,2M 0s
+   100K .......... .......... .....                           100% 3,14M=0,03s
+
+2026-06-01 22:47:50 (4,86 MB/s) - ”cache/contents.chroot/testing/contrib/contents-all.gz” sparades [128762/128762]
+
