@@ -29,7 +29,7 @@ f binary/isolinux/isolinux.cfg
 f binary/isolinux/splash.png
 f binary/isolinux/stdmenu.cfg
 d binary/live
-f binary/live/initrd.img
+f binary/live/initrd.img-6.12.90+deb13.1-amd64
 f binary/live/filesystem.packages
 f binary/live/filesystem.squashfs
 d binary/tools

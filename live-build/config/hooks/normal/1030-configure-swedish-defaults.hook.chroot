@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+cat > /etc/locale.gen << EOF
+sv_SE.UTF-8 UTF-8
+en_US.UTF-8 UTF-8
+EOF
+
+locale-gen
+
+cat > /etc/default/locale << EOF
+LANG=sv_SE.UTF-8
+LANGUAGE=sv_SE:sv:en
+LC_TIME=sv_SE.UTF-8
+EOF
+
+cat > /etc/default/keyboard << EOF
+XKBMODEL="pc105"
+XKBLAYOUT="se"
+XKBVARIANT=""
+XKBOPTIONS=""
+BACKSPACE="guess"
+EOF
+
+echo "Europe/Stockholm" > /etc/timezone
+ln -snf /usr/share/zoneinfo/Europe/Stockholm /etc/localtime

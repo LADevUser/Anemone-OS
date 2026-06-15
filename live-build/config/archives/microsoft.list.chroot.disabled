@@ -1,2 +1,0 @@
-deb [arch=amd64 trusted=yes check-valid-until=no] https://packages.microsoft.com/repos/microsoft-debian-bookworm-prod bookworm main
-deb [arch=amd64 trusted=yes check-valid-until=no] https://packages.microsoft.com/repos/azure-cli/ bookworm main
