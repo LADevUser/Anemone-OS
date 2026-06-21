@@ -5,6 +5,15 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LIVE_BUILD_DIR="$PROJECT_ROOT/live-build"
 ARTIFACTS_DIR="$PROJECT_ROOT/artifacts"
 
+# No matter how this script exits — success, error, or interruption —
+# never leave live-build/ root-owned behind for the next run.
+cleanup_ownership() {
+  if [ -d "$LIVE_BUILD_DIR" ]; then
+    sudo chown -R "$(id -u):$(id -g)" "$LIVE_BUILD_DIR" 2>/dev/null || true
+  fi
+}
+trap cleanup_ownership EXIT
+
 VERSION_FILE="$PROJECT_ROOT/VERSION"
 VERSION="dev"
 
@@ -21,6 +30,23 @@ echo "Live-build dir:  $LIVE_BUILD_DIR"
 echo "Artifacts dir:   $ARTIFACTS_DIR"
 echo "Version:         $VERSION"
 echo
+
+# --- Self-healing ownership repair ---
+# `lb build` runs as root and can leave root-owned files behind in
+# live-build/ (metadata, cache, chroot). If a previous run — by you,
+# on another machine, or by a colleague — left root-owned artifacts,
+# fix that automatically instead of making the next person debug
+# "Permission denied" before they've even started.
+if [ -d "$LIVE_BUILD_DIR" ]; then
+  ROOT_OWNED_COUNT="$(find "$LIVE_BUILD_DIR" -user root 2>/dev/null | wc -l)"
+  if [ "$ROOT_OWNED_COUNT" -gt 0 ]; then
+    echo "Found $ROOT_OWNED_COUNT root-owned file(s) in live-build/ from a previous run."
+    echo "Reclaiming ownership for $(whoami)..."
+    sudo chown -R "$(id -u):$(id -g)" "$LIVE_BUILD_DIR"
+    echo "Ownership repaired."
+    echo
+  fi
+fi
 
 command -v lb >/dev/null 2>&1 || {
   echo "ERROR: live-build is not installed."
@@ -70,10 +96,41 @@ fi
 echo "Git commit:      $GIT_COMMIT"
 echo
 
+BUILD_STAMP="${TIMESTAMP} / ${GIT_COMMIT}"
+echo "Build stamp:     $BUILD_STAMP"
+
+GRUB_STAMP_FILE="$LIVE_BUILD_DIR/config/includes.binary/boot/grub/anemone-build-stamp.cfg"
+mkdir -p "$(dirname "$GRUB_STAMP_FILE")"
+cat > "$GRUB_STAMP_FILE" <<STAMP
+set anemone_build_stamp="${BUILD_STAMP}"
+STAMP
+
+echo "GRUB stamp file written: $GRUB_STAMP_FILE"
+echo
+
 cd "$LIVE_BUILD_DIR"
 
-echo "Cleaning previous live-build state..."
-sudo lb clean --purge || true
+echo "Cleaning previous live-build state (full reset)..."
+echo "This removes cache/, chroot/, .build/, and binary/ — every build starts from scratch."
+
+sudo rm -rf \
+  "$LIVE_BUILD_DIR/cache" \
+  "$LIVE_BUILD_DIR/chroot" \
+  "$LIVE_BUILD_DIR/.build" \
+  "$LIVE_BUILD_DIR/binary"
+
+rm -f \
+  "$LIVE_BUILD_DIR/chroot.files" \
+  "$LIVE_BUILD_DIR/chroot.installed_tmp_pkgs" \
+  "$LIVE_BUILD_DIR/chroot.packages.install" \
+  "$LIVE_BUILD_DIR/chroot.packages.live" \
+  "$LIVE_BUILD_DIR/binary.modified_timestamps" \
+  "$LIVE_BUILD_DIR/installer_firmware_details.txt"
+
+sudo lb clean --purge
+
+echo "Clean complete — no cached layers remain."
+echo
 
 echo "Configuring live-build..."
 sudo lb config

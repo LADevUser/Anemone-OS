@@ -55,10 +55,11 @@ component runs successfully.
 
 If a login prompt appears, use:
 
-- Username: `anemone`
-- Password: `anemone`
+- username: `anemone`
+- password: `anemone`
 
-These credentials are only for the live demonstration image.
+The live image is a try-it/demo environment. Credentials are intentionally
+simple and are only for the live demonstration image.
 
 ## Validate a booted live session
 
