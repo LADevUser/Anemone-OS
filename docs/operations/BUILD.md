@@ -15,6 +15,9 @@ If a login prompt appears, use:
 The live image is a try-it/demo environment. Credentials are intentionally
 simple and are only for the live demonstration image.
 
+After boot, switch to TTY4 with `Ctrl+Alt+F4` and confirm that the console does
+not repeatedly report `Authentication failure` for the `anemone` user.
+
 ## Build from repository
 
 Run from repository root:
