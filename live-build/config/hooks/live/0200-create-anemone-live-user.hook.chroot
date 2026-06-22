@@ -1,0 +1,38 @@
+#!/bin/sh
+set -eu
+
+LIVE_USER="anemone"
+LIVE_HOME="/home/$LIVE_USER"
+
+if ! getent passwd "$LIVE_USER" >/dev/null 2>&1; then
+	useradd --create-home \
+		--home-dir "$LIVE_HOME" \
+		--shell /bin/bash \
+		--comment "Anemone Live User" \
+		"$LIVE_USER"
+else
+	usermod --home "$LIVE_HOME" \
+		--shell /bin/bash \
+		--comment "Anemone Live User" \
+		"$LIVE_USER"
+fi
+
+install -d -m 0755 -o "$LIVE_USER" -g "$(id -gn "$LIVE_USER")" "$LIVE_HOME"
+
+printf '%s:%s\n' "$LIVE_USER" "anemone" | chpasswd
+passwd --unlock "$LIVE_USER"
+
+EXTRA_GROUPS=""
+for GROUP in sudo audio video plugdev netdev; do
+	if getent group "$GROUP" >/dev/null 2>&1; then
+		if [ -n "$EXTRA_GROUPS" ]; then
+			EXTRA_GROUPS="$EXTRA_GROUPS,$GROUP"
+		else
+			EXTRA_GROUPS="$GROUP"
+		fi
+	fi
+done
+
+if [ -n "$EXTRA_GROUPS" ]; then
+	usermod --append --groups "$EXTRA_GROUPS" "$LIVE_USER"
+fi

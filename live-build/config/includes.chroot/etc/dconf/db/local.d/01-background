@@ -1,0 +1,4 @@
+[org/gnome/desktop/background]
+color-scheme='prefer-dark'
+picture-uri='file:///usr/share/backgrounds/anemone/default.jpg'
+picture-uri-dark='file:///usr/share/backgrounds/anemone/default.jpg'

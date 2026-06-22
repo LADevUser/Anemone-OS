@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Anemone
+Description=Anemone boot theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/anemone
+ScriptFile=/usr/share/plymouth/themes/anemone/anemone.script

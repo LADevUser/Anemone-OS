@@ -1,0 +1,11 @@
+--2026-06-01 22:47:51--  http://deb.debian.org/debian//dists/testing/non-free-firmware/Contents-amd64.gz
+Slår upp deb.debian.org (deb.debian.org)... 151.101.194.132, 151.101.66.132, 151.101.2.132, ...
+Ansluter till deb.debian.org (deb.debian.org)|151.101.194.132|:80 … ansluten.
+HTTP-begäran skickad, väntar på svar... 200 OK
+Längd: 1220 (1,2K) [application/x-gzip]
+Sparar till: ”cache/contents.chroot/testing/non-free-firmware/contents-amd64.gz”
+
+     0K .                                                     100%  150M=0s
+
+2026-06-01 22:47:51 (150 MB/s) - ”cache/contents.chroot/testing/non-free-firmware/contents-amd64.gz” sparades [1220/1220]
+

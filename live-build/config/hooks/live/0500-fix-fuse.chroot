@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+
+# Anemone OS v1 uses fuse3 only. Do not install libfuse2 or libfuse2t64
+# unless a named supported application explicitly requires legacy FUSE.
+apt-get install -y fuse3

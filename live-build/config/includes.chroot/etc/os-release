@@ -1,0 +1,11 @@
+NAME="Anemone"
+PRETTY_NAME="Anemone Linux"
+ID=anemone
+ID_LIKE=debian
+VERSION="1.0"
+VERSION_ID="1.0"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_ID="13"
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"

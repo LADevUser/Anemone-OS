@@ -1,0 +1,11 @@
+Package: *
+Pin: release n=trixie
+Pin-Priority: 900
+
+Package: *
+Pin: release n=trixie-updates
+Pin-Priority: 900
+
+Package: *
+Pin: release n=trixie-security
+Pin-Priority: 900
