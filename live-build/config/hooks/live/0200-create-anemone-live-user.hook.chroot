@@ -23,7 +23,7 @@ printf '%s:%s\n' "$LIVE_USER" "anemone" | chpasswd
 passwd --unlock "$LIVE_USER"
 
 EXTRA_GROUPS=""
-for GROUP in sudo audio video plugdev netdev; do
+for GROUP in sudo audio video plugdev netdev adm systemd-journal; do
 	if getent group "$GROUP" >/dev/null 2>&1; then
 		if [ -n "$EXTRA_GROUPS" ]; then
 			EXTRA_GROUPS="$EXTRA_GROUPS,$GROUP"
