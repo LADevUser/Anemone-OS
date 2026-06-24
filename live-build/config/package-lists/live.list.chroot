@@ -12,6 +12,7 @@ evince
 firefox-esr
 firmware-linux
 firmware-linux-free
+firmware-iwlwifi
 firmware-misc-nonfree
 fonts-dejavu
 fonts-noto-color-emoji
@@ -46,6 +47,7 @@ plymouth
 plymouth-themes
 power-profiles-daemon
 python3
+rfkill
 simple-scan
 sudo
 systemd-sysv
@@ -54,5 +56,6 @@ unattended-upgrades
 upower
 vlc
 wget
+wpasupplicant
 wireplumber
 xdg-user-dirs-gtk
