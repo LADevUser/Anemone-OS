@@ -1,0 +1,12 @@
+label live-@FLAVOUR@
+	menu label ^Anemone OS - Utforska utan att lamna nagra spar
+	menu default
+	linux @LINUX@
+	initrd @INITRD@
+	append @APPEND_LIVE@
+
+label live-@FLAVOUR@-failsafe
+	menu label Anemone OS - felsakert lage
+	linux @LINUX@
+	initrd @INITRD@
+	append @APPEND_LIVE_FAILSAFE@

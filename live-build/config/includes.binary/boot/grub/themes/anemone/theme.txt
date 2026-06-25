@@ -1,0 +1,65 @@
+# Anemone OS GRUB2 theme
+# The temporary background is kept at /boot/grub/splash.png.
+
+desktop-image: "../../splash.png"
+desktop-color: "#102b2b"
+
+title-text: "Anemone OS"
+title-font: "Unifont Regular 16"
+title-color: "#f2f7f5"
+
+message-font: "Unifont Regular 16"
+message-color: "#f2f7f5"
+
++ label {
+    left = 25%
+    top = 20%
+    width = 50%
+    height = 24
+    text = "Ett svenskt live-system"
+    align = "center"
+    color = "#b8cbc7"
+    font = "Unifont Regular 16"
+}
+
++ boot_menu {
+    left = 12%
+    top = 39%
+    width = 52%
+    height = 30%
+    item_font = "Unifont Regular 16"
+    item_color = "#d5dfdc"
+    selected_item_font = "Unifont Regular 16"
+    selected_item_color = "#78c8b5"
+    item_height = 24
+    item_padding = 6
+    item_spacing = 6
+    icon_width = 0
+    icon_height = 0
+    item_icon_space = 0
+}
+
++ label {
+    left = 8%
+    top = 91%
+    width = 84%
+    height = 20
+    text = "Enter: starta    Pilknappar: välj    E: redigera    C: kommandorad"
+    align = "center"
+    color = "#a9bbb7"
+    font = "Unifont Regular 16"
+}
+
++ progress_bar {
+    id = "__timeout__"
+    left = 28%
+    top = 86%
+    width = 44%
+    height = 14
+    font = "Unifont Regular 16"
+    text = "@TIMEOUT_NOTIFICATION_LONG@"
+    text_color = "#d5dfdc"
+    fg_color = "#78c8b5"
+    bg_color = "#304c49"
+    border_color = "#617c77"
+}
