@@ -10,18 +10,17 @@ message-color: "#c8ddb5"
 message-font: "Unifont Regular 16"
 
 # ── Menyblock ─────────────────────────────────────────────────────────────────
-# Förflyttat: något nedåt och åt vänster för att ligga i det lugna fältet.
-# Mer luft mellan valen — Anemone har aldrig bråttom.
+# EB Garamond Regular — klassisk bokstil, läsbar, tidlös
 + boot_menu {
   left = 6%
   top = 52%
   width = 50%
   height = 30%
 
-  item_font = "Unifont Regular 14"
+  item_font = "Quattrocento Regular 22"
   item_color = "#8aab7a"
 
-  selected_item_font = "Unifont Regular 14"
+  selected_item_font = "Quattrocento Regular 22"
   selected_item_color = "#c8ddb5"
 
   item_height = 44
@@ -65,7 +64,7 @@ message-font: "Unifont Regular 16"
   top = 90%
   width = 10%
   height = 16
-  text = "↵"
+  text = "Enter"
   align = "center"
   color = "#a8c89a"
   font = "Unifont Regular 13"
