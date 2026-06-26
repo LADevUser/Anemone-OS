@@ -138,12 +138,15 @@ fonts-dejavu	2.37-8
 fonts-dejavu-core	2.37-8
 fonts-dejavu-extra	2.37-8
 fonts-dejavu-mono	2.37-8
+fonts-ebgaramond	0.016+git20210310.42d4f9f2-1
 fonts-noto-color-emoji	2.051-0+deb13u1
 fonts-noto-core	20201225-2
 fonts-noto-mono	20201225-2
 fonts-noto-ui-core	20201225-2
 fonts-opensymbol	4:102.12+LibO25.2.3-2+deb13u5
+fonts-quattrocento	1.1-2.1
 fonts-quicksand	0.2016-2.1
+fonts-sil-gentiumplus	6.200-1
 fonts-urw-base35	20200910-8
 fuse3	3.17.2-3
 fxload	0.0.20081013-3
@@ -939,7 +942,7 @@ libsrt1.5-gnutls:amd64	1.5.4-1
 libsrtp2-1:amd64	2.7.0-3
 libss2:amd64	1.47.2-3+b11
 libssh-4:amd64	0.11.2-1+deb13u1
-libssh2-1t64:amd64	1.11.1-1
+libssh2-1t64:amd64	1.11.1-1+deb13u1
 libssl3t64:amd64	3.5.6-1~deb13u2
 libstaroffice-0.0-0:amd64	0.0.7-1+b2
 libstartup-notification0:amd64	0.12-8

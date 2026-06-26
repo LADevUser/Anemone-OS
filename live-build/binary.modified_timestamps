@@ -7,10 +7,13 @@ d binary/boot
 d binary/boot/grub
 d binary/boot/grub/live-theme
 f binary/boot/grub/live-theme/theme.txt
+f binary/boot/grub/splash.png
 d binary/boot/grub/x86_64-efi
 f binary/boot/grub/x86_64-efi/grub.cfg
 f binary/boot/grub/theme.cfg
 f binary/boot/grub/grub.cfg
+d binary/boot/grub/themes
+d binary/boot/grub/themes/anemone
 f binary/boot/grub/config.cfg
 f binary/boot/grub/loopback.cfg
 f binary/boot/grub/efi.img
