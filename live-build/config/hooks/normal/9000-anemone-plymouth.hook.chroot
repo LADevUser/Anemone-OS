@@ -1,0 +1,12 @@
+#!/bin/sh
+# 9000-anemone-plymouth.hook.chroot
+#
+# Körs vid byggtid, inne i chroot, efter att includes.chroot lagts in.
+# Sätter Anemone som standardtema och bakar in det + i915 i initramfs,
+# så Plymouth kan rita papperet direkt efter GRUB i stället för efter
+# en svart paus.
+
+set -e
+
+plymouth-set-default-theme anemone
+update-initramfs -u

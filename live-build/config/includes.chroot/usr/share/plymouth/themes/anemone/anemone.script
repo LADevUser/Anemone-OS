@@ -1,8 +1,8 @@
+Window.SetBackgroundTopColor(0.980, 0.965, 0.925);
+Window.SetBackgroundBottomColor(0.980, 0.965, 0.925);
 screen_width = Window.GetWidth();
 screen_height = Window.GetHeight();
-
-logo = Image("logo.png");
+logo = Image("Anemone-OS-Boot.png");
 sprite = Sprite(logo);
-
 sprite.SetX((screen_width - logo.GetWidth()) / 2);
 sprite.SetY((screen_height - logo.GetHeight()) / 2);
