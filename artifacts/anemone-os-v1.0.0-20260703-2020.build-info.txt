@@ -1,0 +1,8 @@
+Anemone OS build information
+
+Version:      v1.0.0
+Git commit:   e63a968
+Built at:     2026-07-03T20:32:56+02:00
+Host:         gremlin-server
+Live-build:   20250505+deb13u1
+ISO:          anemone-os-v1.0.0-20260703-2020.iso

@@ -1,5 +1,5 @@
 # Anemone OS — GRUB2 Theme
-# Komposition: bokomslag / botanisk planch / utställningsaffisch
+# Komposition: bokomslag / botanisk planch
 # Logotyp lever i bilden. Menyn andas. Inget brådskande.
 
 desktop-image: "splash.png"
@@ -9,12 +9,13 @@ title-text: ""
 message-color: "#c8ddb5"
 message-font: "Unifont Regular 16"
 
-# ── Menyblock ─────────────────────────────────────────────────────────────────
+# ── Menyblock — nedre vänster, som titeln på ett bokomslag ────────────────────
+
 + boot_menu {
-  left = 6%
+  left = 8%
   top = 60%
-  width = 50%
-  height = 24%
+  width = 60%
+  height = 28%
 
   item_font = "Quattrocento Regular 22"
   item_color = "#8aab7a"
@@ -22,9 +23,9 @@ message-font: "Unifont Regular 16"
   selected_item_font = "Quattrocento Regular 22"
   selected_item_color = "#c8ddb5"
 
-  item_height = 46
-  item_padding = 6
-  item_spacing = 8
+  item_height = 44
+  item_padding = 0
+  item_spacing = 14
 
   icon_width = 0
   icon_height = 0
@@ -33,10 +34,11 @@ message-font: "Unifont Regular 16"
   scrollbar = false
 }
 
-# ── Timeout-indikator (diskret) ───────────────────────────────────────────────
+# ── Timeout-indikator — diskret ───────────────────────────────────────────────
+
 + progress_bar {
   id = "__timeout__"
-  left = 6%
+  left = 8%
   top = 91%
   width = 26%
   height = 2
@@ -49,6 +51,7 @@ message-font: "Unifont Regular 16"
 }
 
 # ── Separator ─────────────────────────────────────────────────────────────────
+
 + image {
   left = 2%
   top = 94%
