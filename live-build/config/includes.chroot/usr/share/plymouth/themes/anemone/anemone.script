@@ -1,9 +1,9 @@
 # Anemone OS — Plymouth boot theme
-# Bakgrunden är papperets kräm — samma som GRUB-omslagets (#F0EDE3).
+# Bakgrunden är papperets gulnade ton — #FAF6EC (250, 246, 236).
 # Illustrationen tonar in som en kapitelplansch.
 
-Window.SetBackgroundTopColor(0.941, 0.929, 0.890);
-Window.SetBackgroundBottomColor(0.941, 0.929, 0.890);
+Window.SetBackgroundTopColor(0.980, 0.965, 0.925);
+Window.SetBackgroundBottomColor(0.980, 0.965, 0.925);
 
 screen_width = Window.GetWidth();
 screen_height = Window.GetHeight();
