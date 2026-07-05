@@ -1,30 +1,66 @@
-# Anemone OS — Plymouth boot theme
-# Bakgrunden är papperets gulnade ton — #FAF6EC (250, 246, 236).
-# Illustrationen tonar in som en kapitelplansch.
+# Anemone OS — Plymouth: gryningen
+#
+# Regin: öppna på den mörka skogen (samma bild som GRUB:s bakgrund) så att
+# sidvändningen mellan GRUB och Plymouth göms — man blinkar, och samma skog
+# är kvar. Tona sedan över till cream-plåten som en gryning, och VILA där
+# hur länge booten än tar. All rörelse är front-laddad; slutbilden är stabil.
+#
+# Kräver två helbilder i temamappen, i panelens nativa upplösning:
+#   forest.png   — mörk skog + vitsippa (IDENTISK med GRUB:s desktop-image)
+#   chapter.png  — cream-papper #FAF6EC med "Kapitel 1 / Välkommen /
+#                  Resan börjar här" inbakad, centrerad i säker mittzon
+#
+# Ersätter den tidigare enkla logo.png-centreringen.
 
-Window.SetBackgroundTopColor(0.980, 0.965, 0.925);
-Window.SetBackgroundBottomColor(0.980, 0.965, 0.925);
+screen_w = Window.GetWidth();
+screen_h = Window.GetHeight();
 
-screen_width = Window.GetWidth();
-screen_height = Window.GetHeight();
+# Bakgrund: skogsmörk (#0a1a14), inte ren svart. Syns bara om en kant råkar
+# gliva — då är glipan skog, inte tomrum. Matchar GRUB:s mörka register.
+Window.SetBackgroundTopColor(0.039, 0.102, 0.078);
+Window.SetBackgroundBottomColor(0.039, 0.102, 0.078);
 
-logo = Image("logo.png");
-sprite = Sprite(logo);
-
-sprite.SetX((screen_width - logo.GetWidth()) / 2);
-sprite.SetY((screen_height - logo.GetHeight()) / 2);
-sprite.SetOpacity(0);
-
-logo_opacity = 0;
-
-fun refresh_callback() {
-    if (logo_opacity < 1) {
-        logo_opacity = logo_opacity + 0.02;
-        if (logo_opacity > 1) {
-            logo_opacity = 1;
-        }
-        sprite.SetOpacity(logo_opacity);
-    }
+# Fyll skärmen (cover): skala så bilden täcker helt, beskär överskott.
+# Ingen letterbox -> ingen bakgrundsfärg-konflikt mellan mörk och cream.
+fun cover(name) {
+    img = Image(name);
+    iw = img.GetWidth();
+    ih = img.GetHeight();
+    sx = screen_w / iw;
+    sy = screen_h / ih;
+    s = sx;
+    if (sy > sx) s = sy;
+    scaled = img.Scale(iw * s, ih * s);
+    sp = Sprite(scaled);
+    sp.SetX((screen_w - iw * s) / 2);
+    sp.SetY((screen_h - ih * s) / 2);
+    return sp;
 }
 
-Plymouth.SetRefreshFunction(refresh_callback);
+forest = cover("forest.png");
+forest.SetZ(0);
+forest.SetOpacity(1);
+
+chapter = cover("chapter.png");
+chapter.SetZ(10);
+chapter.SetOpacity(0);      # ligger osynlig ovanpå skogen
+
+# --- Tidslinje (ca 50 bilder/sekund — justera känslan här) ---
+hold_frames     = 25;       # ~0.5 s stilla på mörk skog (döljer sidvändningen)
+dissolve_frames = 80;       # ~1.6 s gryning: skog tonar upp till papper
+frame = 0;
+
+fun refresh() {
+    frame++;
+    if (frame > hold_frames) {
+        p = (frame - hold_frames) / dissolve_frames;
+        if (p > 1) p = 1;              # klampa och VILA på papperet
+        chapter.SetOpacity(p);
+    }
+}
+Plymouth.SetRefreshFunction(refresh);
+
+# Not till framtida jag: ingen spinner, ingen progressmätare — gryningen ÄR
+# tecknet att något händer. När installern kommer och disken kan krypteras
+# behövs display_password / SetDisplayPasswordFunction här; live-sessionen
+# frågar aldrig, så det lämnas medvetet ogjort tills dess.
