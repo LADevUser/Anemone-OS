@@ -1,8 +1,0 @@
-Anemone OS build information
-
-Version:      v1.0.0
-Git commit:   8bfc817
-Built at:     2026-07-06T18:11:40+02:00
-Host:         DebianConsid
-Live-build:   20250505+deb13u1
-ISO:          anemone-os-v1.0.0-20260706-1759.iso
