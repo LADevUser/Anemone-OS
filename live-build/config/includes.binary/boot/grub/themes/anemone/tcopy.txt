@@ -9,12 +9,6 @@ title-text: ""
 message-color: "#c8ddb5"
 message-font: "Unifont Regular 16"
 
-terminal-left: "0%"
-terminal-top: "0%"
-terminal-width: "0%"
-terminal-height: "0%"
-terminal-border: "0"
-
 # ── Menyblock — nedre vänster, som titeln på ett bokomslag ────────────────────
 
 + boot_menu {
@@ -42,6 +36,19 @@ terminal-border: "0"
 
 # ── Timeout-indikator — diskret ───────────────────────────────────────────────
 
++ progress_bar {
+  id = "__timeout__"
+  left = 8%
+  top = 91%
+  width = 26%
+  height = 2
+  font = "Unifont Regular 12"
+  text = ""
+  text_color = "#6a9478"
+  fg_color = "#4a7a5a"
+  bg_color = "#1a3a2a"
+  border_color = "#2d5a3d"
+}
 
 # ── Separator ─────────────────────────────────────────────────────────────────
 
