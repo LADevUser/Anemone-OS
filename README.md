@@ -28,13 +28,14 @@ Builds use Debian `live-build`.
 Run from the repository root:
 
 ```sh
-cd live-build
-sudo lb clean --purge
-sudo lb build
+./scripts/build-anemone.sh
 ```
 
 Generated ISO files, logs, caches, chroots, and binary output must not be
 committed to git.
+
+Do not run Git or the build script with `sudo`. The build wrapper uses `sudo`
+only for live-build operations and repairs generated file ownership on exit.
 
 ## Write the ISO to USB
 

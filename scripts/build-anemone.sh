@@ -4,15 +4,43 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LIVE_BUILD_DIR="$PROJECT_ROOT/live-build"
 ARTIFACTS_DIR="$PROJECT_ROOT/artifacts"
+OWNER_UID="$(id -u)"
+OWNER_GID="$(id -g)"
 
-# No matter how this script exits — success, error, or interruption —
-# never leave live-build/ root-owned behind for the next run.
-cleanup_ownership() {
-  if [ -d "$LIVE_BUILD_DIR" ]; then
-    sudo chown -R "$(id -u):$(id -g)" "$LIVE_BUILD_DIR" 2>/dev/null || true
+if [ "$OWNER_UID" -eq 0 ]; then
+  echo "ERROR: Do not run this script as root or with sudo."
+  echo "Run it as your normal user; the script uses sudo only for live-build steps."
+  exit 1
+fi
+
+# No matter how this script exits -- success, error, or interruption -- return
+# the checkout to the developer user. live-build and fakeroot can leave files
+# owned by root or nobody in live-build/ and artifacts/.
+repair_project_ownership() {
+  FOREIGN_OWNED="$(find "$PROJECT_ROOT" -xdev ! -user "$OWNER_UID" -print -quit 2>/dev/null || true)"
+  if [ -n "$FOREIGN_OWNED" ]; then
+    sudo find "$PROJECT_ROOT" -xdev ! -user "$OWNER_UID" -exec chown -h "$OWNER_UID:$OWNER_GID" {} + 2>/dev/null || true
   fi
 }
-trap cleanup_ownership EXIT
+
+verify_project_ownership() {
+  FOREIGN_OWNED="$(find "$PROJECT_ROOT" -xdev ! -user "$OWNER_UID" -print -quit 2>/dev/null || true)"
+  if [ -n "$FOREIGN_OWNED" ]; then
+    echo
+    echo "WARNING: Project tree still contains files not owned by $(id -un):"
+    find "$PROJECT_ROOT" -xdev ! -user "$OWNER_UID" -printf '  %p (%u:%g)\n' 2>/dev/null | head -n 20 || true
+    echo "Git may fail until ownership is repaired."
+  fi
+}
+
+cleanup_on_exit() {
+  repair_project_ownership
+  verify_project_ownership
+}
+
+trap cleanup_on_exit EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 VERSION_FILE="$PROJECT_ROOT/VERSION"
 VERSION="dev"
@@ -32,17 +60,22 @@ echo "Version:         $VERSION"
 echo
 
 # --- Self-healing ownership repair ---
-# `lb build` runs as root and can leave root-owned files behind in
-# live-build/ (metadata, cache, chroot). If a previous run — by you,
-# on another machine, or by a colleague — left root-owned artifacts,
-# fix that automatically instead of making the next person debug
-# "Permission denied" before they've even started.
-if [ -d "$LIVE_BUILD_DIR" ]; then
-  ROOT_OWNED_COUNT="$(find "$LIVE_BUILD_DIR" -user root 2>/dev/null | wc -l)"
-  if [ "$ROOT_OWNED_COUNT" -gt 0 ]; then
-    echo "Found $ROOT_OWNED_COUNT root-owned file(s) in live-build/ from a previous run."
-    echo "Reclaiming ownership for $(whoami)..."
-    sudo chown -R "$(id -u):$(id -g)" "$LIVE_BUILD_DIR"
+# Repair leftovers from previous builds before Git or shell operations need to
+# write there. This covers root-owned live-build state and fakeroot/nobody ISO
+# artifacts without assuming the same username on every development machine.
+FOREIGN_OWNED_COUNT="$(find "$PROJECT_ROOT" -xdev ! -user "$OWNER_UID" 2>/dev/null | wc -l)"
+if [ "$FOREIGN_OWNED_COUNT" -gt 0 ]; then
+  echo "Found $FOREIGN_OWNED_COUNT file(s) not owned by $(id -un) from a previous run."
+  echo "Reclaiming ownership for $(id -un)..."
+  repair_project_ownership
+  REMAINING_FOREIGN_OWNED="$(find "$PROJECT_ROOT" -xdev ! -user "$OWNER_UID" -print -quit 2>/dev/null || true)"
+  if [ -n "$REMAINING_FOREIGN_OWNED" ]; then
+    echo "ERROR: Could not repair ownership under:"
+    echo "  $PROJECT_ROOT"
+    echo "First remaining path:"
+    echo "  $REMAINING_FOREIGN_OWNED"
+    exit 1
+  else
     echo "Ownership repaired."
     echo
   fi

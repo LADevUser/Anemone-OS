@@ -22,13 +22,13 @@ not repeatedly report `Authentication failure` for the `anemone` user.
 
 Run from repository root:
 
-    cd live-build
-    sudo lb clean --purge
-    sudo lb build
+    ./scripts/build-anemone.sh
 
 ## Rule
 
 Generated ISO files, logs, cache and chroot output must not be committed to git.
+Do not run Git or the build script with `sudo`; the wrapper invokes `sudo` only
+for live-build steps and restores checkout ownership before it exits.
 
 ## Validate a booted live session
 
