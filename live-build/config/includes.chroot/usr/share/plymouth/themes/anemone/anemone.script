@@ -1,30 +1,69 @@
-# Anemone OS — Plymouth boot theme
-# Bakgrunden är papperets gulnade ton — #FAF6EC (250, 246, 236).
-# Illustrationen tonar in som en kapitelplansch.
+# Anemone OS — Plymouth dream flow
+#
+# Safe iteration: visual-only Plymouth script. No boot parameters, GRUB files,
+# kernel paths, initrd paths, EFI files or live-build boot logic are touched.
+#
+# Design:
+#   GRUB is the book cover.
+#   Plymouth opens immediately on the first pre-rendered dream frame, then turns
+#   the page into the chapter illustration and holds the final frame until GDM.
+#
+# Assets are pre-rendered 1920x1080 PNG files in this theme directory. The script
+# intentionally avoids runtime scaling; images are only centered. On other panel
+# sizes they may crop or letterbox, but boot timing stays simple and predictable.
 
-Window.SetBackgroundTopColor(0.980, 0.965, 0.925);
-Window.SetBackgroundBottomColor(0.980, 0.965, 0.925);
+#Window.SetBackgroundTopColor(0.039, 0.102, 0.078);
+#Window.SetBackgroundBottomColor(0.039, 0.102, 0.078);
+Window.SetBackgroundTopColor(1.0, 0.0, 0.0);
+Window.SetBackgroundBottomColor(1.0, 0.0, 0.0);
 
 screen_width = Window.GetWidth();
 screen_height = Window.GetHeight();
 
-logo = Image("logo.png");
-sprite = Sprite(logo);
+fun centered_sprite(name, z, opacity) {
+    image = Image(name);
+    sprite = Sprite(image);
+    sprite.SetX((screen_width - image.GetWidth()) / 2);
+    sprite.SetY((screen_height - image.GetHeight()) / 2);
+    sprite.SetZ(z);
+    sprite.SetOpacity(opacity);
+    return sprite;
+}
 
-sprite.SetX((screen_width - logo.GetWidth()) / 2);
-sprite.SetY((screen_height - logo.GetHeight()) / 2);
-sprite.SetOpacity(0);
+cover = centered_sprite("dream-00-cover.png", 0, 1);
+turn = centered_sprite("dream-01-transition.png", 10, 0);
+chapter = centered_sprite("dream-02-chapter.png", 20, 0);
+final_sprite = centered_sprite("dream-03-chapter-final.png", 30, 0);
 
-logo_opacity = 0;
+# Plymouth script refresh is typically close to 50 fps. Keep the full visible
+# transition around 2.5–3 seconds, then hold the final image completely still.
+turn_frames = 35;       # ~0.7 s: cover gives way to the page-turn frame
+chapter_frames = 105;   # ~2.1 s: page-turn frame dissolves into chapter art
+final_frames = 10;      # quick settle onto the final still frame
+frame = 0;
+
+fun clamp01(value) {
+    if (value < 0) {
+        value = 0;
+    }
+    if (value > 1) {
+        value = 1;
+    }
+    return value;
+}
 
 fun refresh_callback() {
-    if (logo_opacity < 1) {
-        logo_opacity = logo_opacity + 0.02;
-        if (logo_opacity > 1) {
-            logo_opacity = 1;
-        }
-        sprite.SetOpacity(logo_opacity);
-    }
+    frame++;
+
+    turn_progress = clamp01(frame / turn_frames);
+    chapter_progress = clamp01((frame - turn_frames) / chapter_frames);
+    final_progress = clamp01((frame - turn_frames - chapter_frames) / final_frames);
+
+    # Keep lower layers visible. The page-turn and chapter frames dissolve over
+    # them, avoiding black gaps if Plymouth starts before the refresh loop ticks.
+    turn.SetOpacity(turn_progress);
+    chapter.SetOpacity(chapter_progress);
+    final_sprite.SetOpacity(final_progress);
 }
 
 Plymouth.SetRefreshFunction(refresh_callback);

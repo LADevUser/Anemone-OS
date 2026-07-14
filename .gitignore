@@ -6,6 +6,13 @@ cache/
 chroot/
 binary/
 source/
+/live-build/local/
+/live-build/wget-log*
+/live-build/chroot.files
+/live-build/chroot.installed_tmp_pkgs
+/live-build/chroot.packages.*
+/live-build/binary.modified_timestamps
+/live-build/installer_firmware_details.txt
 
 # images and generated build reports
 *.iso
@@ -14,6 +21,8 @@ source/
 *.contents
 *.files
 *.packages
+/artifacts/*
+!/artifacts/.gitkeep
 
 # temporary files
 *.tmp
