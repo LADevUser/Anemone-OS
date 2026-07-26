@@ -32,4 +32,4 @@ Anemone OS v1 is a Debian Trixie based public-sector office workstation for muni
 - Review `live-build/config/archives/` for enabled third-party repositories.
 - Review `live-build/config/apt/` for disabled security checks.
 - Review `live-build/config/hooks/` for network installs and unstable-suite references.
-- Review `live-build/config/includes.chroot/` for shell defaults that assume removed developer tools.
+- Review `live-build/config/includes.chroot_after_packages/` for shell defaults that assume removed developer tools.

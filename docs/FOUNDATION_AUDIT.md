@@ -11,11 +11,15 @@ theme resources, Plymouth theme resources, hooks, and build documentation.
 - `scripts/build-cleanup-anemone.sh`: manual cleanup helper, now guarded against
   root execution and foreign-owned leftovers.
 - `scripts/validate-live-baseline.sh` and the copy installed into
-  `includes.chroot/usr/local/bin/`: used for validating a booted live session.
+  `includes.chroot_after_packages/usr/local/bin/`: used for validating a
+  booted live session.
 - `live-build/config/includes.binary/`: binary-image files that belong on the
   ISO outside the chroot, including GRUB and ISOLINUX resources.
-- `live-build/config/includes.chroot/`: target filesystem customizations,
-  including Plymouth, branding, defaults, validation, and live user config.
+- `live-build/config/includes.chroot_after_packages/`: target filesystem
+  customizations, including Plymouth, branding, defaults, validation, and
+  live user config. (Migrated from the legacy unified `includes.chroot/` on
+  `v1/feature-template-sync` to match the live-build split-stage convention;
+  see that branch's history for the migration commit.)
 - `live-build/config/bootloaders/`: live-build bootloader templates and GRUB
   theme selection.
 - `live-build/config/hooks/live/`: Anemone-specific chroot hooks for dconf,
@@ -50,8 +54,9 @@ theme resources, Plymouth theme resources, hooks, and build documentation.
 - Empty live-build directories such as `config/archives`, `config/preseed`, and
   `config/includes.*`: likely created by `lb config`. They are harmless but can
   be reconsidered if the project later owns a stricter minimal live-build tree.
-- `live-build/config/includes.chroot/usr/share/pixmaps/debian-logo.png`: kept
-  because desktop components may still reference the Debian pixmap fallback.
+- `live-build/config/includes.chroot_after_packages/usr/share/pixmaps/debian-logo.png`:
+  kept because desktop components may still reference the Debian pixmap
+  fallback.
 - GRUB font files not referenced directly by `theme.txt` but shipped in the
   theme directory: kept because GRUB font loading can depend on generated font
   names rather than file names.
